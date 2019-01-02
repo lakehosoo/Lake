@@ -1,0 +1,41 @@
+conda install python=3.6
+
+conda --version
+
+conda update conda
+conda update -all
+conda search 패키지명
+conda install 패키지명
+conda remove 패키지명
+
+
+conda create -n 가상환경명 [패키지명...]
+conda create -n tutorial python=3.5 numpy scipy matplotlib spyder pandas seaborn scikit-learn h5py
+
+conda info --envs :환경목록확인
+
+activate 가상환경명
+activate tutorial
+
+deactivate
+
+conda create -n 가상환경명 --clone 원본환경명
+
+conda remove -n 가상환경명 --all
+
+conda list -n 가상환경명 --explicit > c:\list.txt
+
+conda create -n 가상환경명 --file c:\list.txt
+
+conda config --set ssl_verify false
+
+
+pip --version
+pip list
+pip install 패키지명
+pip install --upgrade 패키지명
+pip uninstall 패키지명
+
+(python -m) pip install --upgrade pip
+
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org casadi
