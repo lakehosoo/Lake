@@ -60,9 +60,16 @@ over1=[value(m.overflow1[k]) for k in m.t]
 over2=[value(m.overflow2[k]) for k in m.t]
 
 plt.figure()
+plt.subplot(121)
 plt.plot(time,h1,'b-')
 plt.plot(time,h2,'r--')
 plt.xlabel('Time (hrs)')
 plt.ylabel('Height (m)')
 plt.legend(['h1','h2'], loc='best')
+plt.subplot(122)
+plt.plot(time,out1,'b-', time,out2,'r-')
+plt.plot(time,over1,'b--', time,over2,'r--')
+plt.xlabel('Time (hrs)')
+plt.ylabel('Flowrate (m3/hr)')
+plt.legend(['Outlet1','Outlet2','Overflow1','Overflow2'], loc='best')
 plt.show()
