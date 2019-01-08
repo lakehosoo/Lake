@@ -39,20 +39,30 @@ def _qout2(m,i):
 m.qout2con = Constraint(m.t, rule=_qout2)
 
 discretizer = TransformationFactory('dae.collocation')
-discretizer.apply_to(m,nfe=10,ncp=7,scheme='LAGRANGE-RADAU')
+discretizer.apply_to(m,nfe=100,ncp=7,scheme='LAGRANGE-RADAU')
 
 def _obj(m):
     return sum(m.overflow1[i] + m.overflow2[i] for i in m.t)
 m.obj = Objective(rule=_obj)
 
 results = SolverFactory('ipopt').solve(m, tee=True)
-'''
-# plot results
+
+# Plot Result
+
+import matplotlib.pyplot as plt
+
+time=list(m.t)
+h1=[value(m.h1[k]) for k in m.t]
+h2=[value(m.h2[k]) for k in m.t]
+out1=[value(m.qout1[k]) for k in m.t]
+out2=[value(m.qout2[k]) for k in m.t]
+over1=[value(m.overflow1[k]) for k in m.t]
+over2=[value(m.overflow2[k]) for k in m.t]
+
 plt.figure()
-plt.plot(t,y[:,0],'b-')
-plt.plot(t,y[:,1],'r--')
+plt.plot(time,h1,'b-')
+plt.plot(time,h2,'r--')
 plt.xlabel('Time (hrs)')
 plt.ylabel('Height (m)')
-plt.legend(['h1','h2'])
+plt.legend(['h1','h2'], loc='best')
 plt.show()
-'''
