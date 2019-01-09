@@ -38,17 +38,28 @@ def _qout2(m,i):
     return (m.qout2[i]/m.c1)**2 == m.h2[i]
 m.qout2con = Constraint(m.t, rule=_qout2)
 
-discretizer = TransformationFactory('dae.collocation')
-discretizer.apply_to(m,nfe=100,ncp=7,scheme='LAGRANGE-RADAU')
+def _sumofoverflow(m,i):
+    return m.overflow1[i] + m.overflow2[i]
+m.sumofoverflow = Integral(m.t, wrt=m.t, rule=_sumofoverflow)
+
+#discretizer = TransformationFactory('dae.collocation')
+#discretizer.apply_to(m,nfe=40,ncp=5,scheme='LAGRANGE-RADAU')
+#discretizer.reduce_collocation_points(m, var=m.overflow1, ncp=1, contset=m.t)
+#discretizer.reduce_collocation_points(m, var=m.overflow2, ncp=1, contset=m.t)
+
+discretizer = TransformationFactory('dae.finite_difference')
+discretizer.apply_to(m,nfe=200,scheme='BACKWARD')
 
 def _obj(m):
-    return sum(m.overflow1[i] + m.overflow2[i] for i in m.t)
+    return m.sumofoverflow
 m.obj = Objective(rule=_obj)
 
-results = SolverFactory('ipopt').solve(m, tee=True)
+solver = SolverFactory('ipopt')
+result = solver.solve(m, tee=True)
+
+print('Sum of Overflows: '+str(value(m.sumofoverflow)))
 
 # Plot Result
-
 import matplotlib.pyplot as plt
 
 time=list(m.t)
@@ -60,13 +71,13 @@ over1=[value(m.overflow1[k]) for k in m.t]
 over2=[value(m.overflow2[k]) for k in m.t]
 
 plt.figure()
-plt.subplot(121)
+plt.subplot(211)
 plt.plot(time,h1,'b-')
 plt.plot(time,h2,'r--')
 plt.xlabel('Time (hrs)')
 plt.ylabel('Height (m)')
 plt.legend(['h1','h2'], loc='best')
-plt.subplot(122)
+plt.subplot(212)
 plt.plot(time,out1,'b-', time,out2,'r-')
 plt.plot(time,over1,'b--', time,over2,'r--')
 plt.xlabel('Time (hrs)')
