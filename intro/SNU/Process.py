@@ -202,3 +202,9 @@ qa_all = np.hstack((c1[N:2*N], c2[N:2*N], c3[N:2*N], c4[N:2*N], c5[N:2*N], c6[N:
 cb_all = np.hstack((c1[2*N:3*N], cd1[Nex:2*Nex], c2[2*N:3*N], cd2[Nex:2*Nex], c3[2*N:3*N], cd3[Nex:2*Nex], c4[2*N:3*N], cd4[Nex:2*Nex], c5[2*N:3*N], cd5[Nex:2*Nex], c6[2*N:3*N], cd6[Nex:2*Nex], c7[2*N:3*N], cd7[Nex:2*Nex], c8[2*N:3*N], cd8[Nex:2*Nex]))
 qb_all = np.hstack((c1[3*N:4*N], c2[3*N:4*N], c3[3*N:4*N], c4[3*N:4*N], c5[3*N:4*N], c6[3*N:4*N], c7[3*N:4*N], c8[3*N:4*N]))
 T_all = np.hstack((c1[4*N:5*N], cd1[2*Nex:3*Nex], c2[4*N:5*N], cd2[2*Nex:3*Nex], c3[4*N:5*N], cd3[2*Nex:3*Nex], c4[4*N:5*N], cd4[2*Nex:3*Nex], c5[4*N:5*N], cd5[2*Nex:3*Nex], c6[4*N:5*N], cd6[2*Nex:3*Nex], c7[4*N:5*N], cd7[2*Nex:3*Nex], c8[4*N:5*N], cd8[2*Nex:3*Nex]))
+
+np.savetxt('ca_all.csv', ca_all, fmt="%d", delimiter=",")
+np.savetxt('qa_all.csv', qa_all, fmt="%d", delimiter=",")
+np.savetxt('cb_all.csv', cb_all, fmt="%d", delimiter=",")
+np.savetxt('qb_all.csv', qb_all, fmt="%d", delimiter=",")
+np.savetxt('T_all.csv', T_all, fmt="%d", delimiter=",")
