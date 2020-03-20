@@ -22,10 +22,10 @@ exp3[:,1] = exp3[:,1] + 273.15
 conv = [0.713, 0.816, 0.917, 0.980]
 
 # Data Treatment - Temperature
-exp0 = np.delete(exp0, np.argwhere((exp0 >= 50) & (exp0 <= 250)), axis=0)
-exp1 = np.delete(exp1, np.argwhere((exp1 >= 50) & (exp1 <= 250)), axis=0)
-exp2 = np.delete(exp2, np.argwhere((exp2 >= 50) & (exp2 <= 250)), axis=0)
-exp3 = np.delete(exp3, np.argwhere((exp3 >= 50) & (exp3 <= 250)), axis=0)
+exp0 = np.delete(exp0, np.argwhere((exp0 >= 150) & (exp0 <= 301)), axis=0)
+exp1 = np.delete(exp1, np.argwhere((exp1 >= 150) & (exp1 <= 301)), axis=0)
+exp2 = np.delete(exp2, np.argwhere((exp2 >= 150) & (exp2 <= 301)), axis=0)
+exp3 = np.delete(exp3, np.argwhere((exp3 >= 150) & (exp3 <= 301)), axis=0)
 
 # Parameters
 Ax 	 = 5.065;   # cm2
@@ -146,23 +146,25 @@ def mutation(offspring_crossover, num_mutations):
             offspring_crossover[idx, gene_idx] = offspring_crossover[idx, gene_idx]*(1 + random_value)
     return offspring_crossover
 
+	
 # Parameters to Optimize : k0, Ea, dH, UA 
-initials = [2229, 17857, -361252, 69]
-#initials = [6200000, 36000, -110000, 45]
+#initials = [2229, 17857, -361252, 69]
+initials = [6200000, 36000, -110000, 45]
+#initials = [6000000, 50000, -500000, 100]
 
 # Number of Parameters to optimize.
 num_params = len(initials)
 
 # Genetic algorithm parameters:
-sol_per_pop = 10		# Population size
-num_parents_mating = 2	# Mating pool size
+sol_per_pop = 20		# Population size
+num_parents_mating = 5	# Mating pool size
 num_mutations = 2		# Number of times being mutated
-num_generations = 10000
+num_generations = 1000
 
 # Defining the population size.
 pop_size = (sol_per_pop,num_params) # The population will have sol_per_pop chromosome where each chromosome has num_params genes.
 #Creating the initial population.
-initial_factor = np.random.uniform(low=0, high=5, size=pop_size)
+initial_factor = np.random.uniform(low=0, high=1, size=pop_size)
 new_population = initial_factor*initials
 print(new_population)
 
@@ -240,7 +242,7 @@ ax1.grid()
 ax1.ticklabel_format(style='plain',axis='x')
 
 p3 = ax2.plot(Lspan,X[0,:])[0]
-ax2.plot(300, conv[0], color='blue', marker='o')
+ax2.plot(300, conv[0], color='blue', linestyle='none', marker='o')
 ax2.legend(['$X_{exp}$','X'], loc='lower right')
 ax2.set_ylim(0,1)
 ax2.set_yticks(np.arange(0,1,0.1))
@@ -249,6 +251,7 @@ ax2.grid()
 ax2.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax2.set_title('Conversion', fontsize='medium')
 ax2.ticklabel_format(style='plain',axis='x')
+ax2.text(-80, 1.03, r'T$_a$ = 25$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 # 30C
 ax3.plot(exp1[:,0],exp1[:,1], color='blue', linestyle='none', marker='.')
@@ -262,7 +265,7 @@ ax3.grid()
 ax3.ticklabel_format(style='plain',axis='x')
 
 p6 = ax4.plot(Lspan,X[1,:])[0]
-ax4.plot(300, conv[1], color='blue', marker='o')
+ax4.plot(300, conv[1], color='blue', linestyle='none', marker='o')
 ax4.legend(['$X_{exp}$','X'], loc='lower right')
 ax4.set_ylim(0,1)
 ax4.set_yticks(np.arange(0,1,0.1))
@@ -271,6 +274,7 @@ ax4.grid()
 ax4.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax4.set_title('Conversion', fontsize='medium')
 ax4.ticklabel_format(style='plain',axis='x')
+ax4.text(-80, 1.03, r'T$_a$ = 30$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 # 35C
 ax5.plot(exp2[:,0],exp2[:,1], color='blue', linestyle='none', marker='.')
@@ -284,7 +288,7 @@ ax5.grid()
 ax5.ticklabel_format(style='plain',axis='x')
 
 p9 = ax6.plot(Lspan,X[2,:])[0]
-ax6.plot(300, conv[2], color='blue', marker='o')
+ax6.plot(300, conv[2], color='blue', linestyle='none', marker='o')
 ax6.legend(['$X_{exp}$','X'], loc='lower right')
 ax6.set_ylim(0,1)
 ax6.set_yticks(np.arange(0,1,0.1))
@@ -293,6 +297,7 @@ ax6.grid()
 ax6.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax6.set_title('Conversion', fontsize='medium')
 ax6.ticklabel_format(style='plain',axis='x')
+ax6.text(-80, 1.03, r'T$_a$ = 35$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 # 40C
 ax7.plot(exp3[:,0],exp3[:,1], color='blue', linestyle='none', marker='.')
@@ -306,7 +311,7 @@ ax7.grid()
 ax7.ticklabel_format(style='plain',axis='x')
 
 p12 = ax8.plot(Lspan,X[3,:])[0]
-ax8.plot(300, conv[3], color='blue', marker='o')
+ax8.plot(300, conv[3], color='blue', linestyle='none', marker='o')
 ax8.legend(['$X_{exp}$','X'], loc='lower right')
 ax8.set_ylim(0,1)
 ax8.set_yticks(np.arange(0,1,0.1))
@@ -315,6 +320,18 @@ ax8.grid()
 ax8.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax8.set_title('Conversion', fontsize='medium')
 ax8.ticklabel_format(style='plain',axis='x')
+ax8.text(-80, 1.03, r'T$_a$ = 40$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
+
+ax1.text(-400, 300,
+		 r'k0  = 'f'{param[0]:.0f} (1/hr)'
+		 '\n'
+		 r'E$_{a}$  = 'f'{param[1]:.0f} (J/mol)'
+		 '\n'
+		 r'dH = 'f'{param[2]:.0f} (J/mol)'
+		 '\n'
+		 r'UA = 'f'{param[3]:.0f} (J/cm2/hr/K)'
+		 , ha='left', wrap = True, fontsize=12,
+        bbox=dict(facecolor='none', edgecolor='black', pad=10.0), fontweight='normal')
 
 from datetime import datetime
 now = datetime.now()
@@ -323,4 +340,4 @@ np.savetxt('Result_'+now+'.out', param, delimiter=',')
 
 #plt.show()
 fig.set_size_inches(18, 9)
-fig.savefig('Result_Pic_'+now+'.png', dpi=300)
+fig.savefig('Result_'+now+'_Pic.png', dpi=300)
