@@ -37,14 +37,14 @@ CpCM = 46.996;
 CpH2 = 7.5318;
 CpCA = 57.8437;
 CpWR = 17.7058;
-
+'''
 # Using Estimated Parameter
 paramfile = np.genfromtxt('Result_20200320-1125.out')
 k0   = paramfile[0]
 Ea   = paramfile[1]
 dH   = paramfile[2]
 UA   = paramfile[3]
-
+'''
 def ODEfun(Yfuncvec, L, Ax,Fa0,rho,Ca0,k0,Ea,dH,Ta0,UA,mc,CpCP,CpCM,CpH2,CpCA):
     Ta= Yfuncvec[0]
     T = Yfuncvec[1]
@@ -115,7 +115,7 @@ ax1.grid()
 ax1.ticklabel_format(style='plain',axis='x')
 
 p3 = ax2.plot(Lspan,X[0,:])[0]
-ax2.plot(300, conv[0], color='blue', marker='o')
+ax2.plot(300, conv[0], color='blue', linestyle='none', marker='o')
 ax2.legend(['$X_{exp}$','X'], loc='lower right')
 ax2.set_ylim(0,1)
 ax2.set_yticks(np.arange(0,1,0.1))
@@ -124,6 +124,7 @@ ax2.grid()
 ax2.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax2.set_title('Conversion', fontsize='medium')
 ax2.ticklabel_format(style='plain',axis='x')
+ax2.text(-80, 1.03, r'T$_a$ = 25$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 # 30C
 ax3.plot(exp1[:,0],exp1[:,1], color='blue', linestyle='none', marker='.')
@@ -137,7 +138,7 @@ ax3.grid()
 ax3.ticklabel_format(style='plain',axis='x')
 
 p6 = ax4.plot(Lspan,X[1,:])[0]
-ax4.plot(300, conv[1], color='blue', marker='o')
+ax4.plot(300, conv[1], color='blue', linestyle='none', marker='o')
 ax4.legend(['$X_{exp}$','X'], loc='lower right')
 ax4.set_ylim(0,1)
 ax4.set_yticks(np.arange(0,1,0.1))
@@ -146,6 +147,7 @@ ax4.grid()
 ax4.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax4.set_title('Conversion', fontsize='medium')
 ax4.ticklabel_format(style='plain',axis='x')
+ax4.text(-80, 1.03, r'T$_a$ = 30$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 # 35C
 ax5.plot(exp2[:,0],exp2[:,1], color='blue', linestyle='none', marker='.')
@@ -159,7 +161,7 @@ ax5.grid()
 ax5.ticklabel_format(style='plain',axis='x')
 
 p9 = ax6.plot(Lspan,X[2,:])[0]
-ax6.plot(300, conv[2], color='blue', marker='o')
+ax6.plot(300, conv[2], color='blue', linestyle='none', marker='o')
 ax6.legend(['$X_{exp}$','X'], loc='lower right')
 ax6.set_ylim(0,1)
 ax6.set_yticks(np.arange(0,1,0.1))
@@ -168,6 +170,7 @@ ax6.grid()
 ax6.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax6.set_title('Conversion', fontsize='medium')
 ax6.ticklabel_format(style='plain',axis='x')
+ax6.text(-80, 1.03, r'T$_a$ = 35$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 # 40C
 ax7.plot(exp3[:,0],exp3[:,1], color='blue', linestyle='none', marker='.')
@@ -181,7 +184,7 @@ ax7.grid()
 ax7.ticklabel_format(style='plain',axis='x')
 
 p12 = ax8.plot(Lspan,X[3,:])[0]
-ax8.plot(300, conv[3], color='blue', marker='o')
+ax8.plot(300, conv[3], color='blue', linestyle='none', marker='o')
 ax8.legend(['$X_{exp}$','X'], loc='lower right')
 ax8.set_ylim(0,1)
 ax8.set_yticks(np.arange(0,1,0.1))
@@ -190,6 +193,7 @@ ax8.grid()
 ax8.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax8.set_title('Conversion', fontsize='medium')
 ax8.ticklabel_format(style='plain',axis='x')
+ax8.text(-80, 1.03, r'T$_a$ = 40$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
 
 axcolor = 'black'
 ax_k0 = plt.axes([0.07, 0.78, 0.1, 0.015], facecolor=axcolor)
@@ -198,10 +202,10 @@ ax_dH = plt.axes([0.07, 0.70, 0.1, 0.015], facecolor=axcolor)
 ax_UA = plt.axes([0.07, 0.66, 0.1, 0.015], facecolor=axcolor)
 #ax_Ta0 = plt.axes([0.07, 0.62, 0.1, 0.015], facecolor=axcolor)
 
-sk0 = Slider(ax_k0, r'k0 ($\frac{1}{hr}$)', 0, 5000, valinit=2229,valfmt='%1.0f')
-sEa= Slider(ax_Ea, r'E$_a$ ($\frac{J}{mol}$)', 12800, 22800, valinit=17857,valfmt='%1.0f')
-sdH = Slider(ax_dH, r'$\Delta H_{Rx}$ ($\frac{J}{mol}$)', -460000, -260000, valinit=-361252,valfmt='%1.0f')
-sUA = Slider(ax_UA,r'Ua ($\frac{J}{cm^2.hr.K}$)', 0, 200, valinit=72,valfmt='%1.0f')
+sk0 = Slider(ax_k0, r'k0 ($\frac{1}{hr}$)', 0, 5000, valinit=k0,valfmt='%1.0f')
+sEa= Slider(ax_Ea, r'E$_a$ ($\frac{J}{mol}$)', 12800, 22800, valinit=Ea,valfmt='%1.0f')
+sdH = Slider(ax_dH, r'$\Delta H_{Rx}$ ($\frac{J}{mol}$)', -460000, -260000, valinit=-dH,valfmt='%1.0f')
+sUA = Slider(ax_UA,r'Ua ($\frac{J}{cm^2.hr.K}$)', 0, 200, valinit=UA,valfmt='%1.0f')
 #sTa0 = Slider(ax_Ta0, r'T$_a$ ($K$)', 273, 323, valinit=298,valfmt='%1.0f')
 
 def update_plot2(val):
