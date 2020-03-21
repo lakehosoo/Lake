@@ -202,10 +202,10 @@ ax_dH = plt.axes([0.07, 0.70, 0.1, 0.015], facecolor=axcolor)
 ax_UA = plt.axes([0.07, 0.66, 0.1, 0.015], facecolor=axcolor)
 #ax_Ta0 = plt.axes([0.07, 0.62, 0.1, 0.015], facecolor=axcolor)
 
-sk0 = Slider(ax_k0, r'k0 ($\frac{1}{hr}$)', 0, 5000, valinit=k0,valfmt='%1.0f')
-sEa= Slider(ax_Ea, r'E$_a$ ($\frac{J}{mol}$)', 12800, 22800, valinit=Ea,valfmt='%1.0f')
-sdH = Slider(ax_dH, r'$\Delta H_{Rx}$ ($\frac{J}{mol}$)', -460000, -260000, valinit=-dH,valfmt='%1.0f')
-sUA = Slider(ax_UA,r'Ua ($\frac{J}{cm^2.hr.K}$)', 0, 200, valinit=UA,valfmt='%1.0f')
+sk0 = Slider(ax_k0, r'k0 ($\frac{1}{hr}$)', 0, 2*k0, valinit=k0,valfmt='%1.0f')
+sEa= Slider(ax_Ea, r'E$_a$ ($\frac{J}{mol}$)', 0, 2*Ea, valinit=Ea,valfmt='%1.0f')
+sdH = Slider(ax_dH, r'$\Delta H_{Rx}$ ($\frac{J}{mol}$)', 0, -2*dH, valinit=-dH,valfmt='%1.0f')
+sUA = Slider(ax_UA,r'Ua ($\frac{J}{cm^2.hr.K}$)', 0, 2*UA, valinit=UA,valfmt='%1.0f')
 #sTa0 = Slider(ax_Ta0, r'T$_a$ ($K$)', 273, 323, valinit=298,valfmt='%1.0f')
 
 def update_plot2(val):
