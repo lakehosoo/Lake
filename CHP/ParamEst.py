@@ -75,32 +75,33 @@ def mse(predictions, targets):
     return np.square(((predictions - targets)).mean())
 
 def error(param):
-	sol0 = odeint(ODEfun, y0, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
-	sol1 = odeint(ODEfun, y1, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
-	sol2 = odeint(ODEfun, y2, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
-	sol3 = odeint(ODEfun, y3, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
-	Ta =np.vstack((sol0[:, 0],sol1[:, 0],sol2[:, 0],sol3[:, 0]))
-	T =np.vstack((sol0[:, 1],sol1[:, 1],sol2[:, 1],sol3[:, 1]))
-	X =np.vstack((sol0[:, 2],sol1[:, 2],sol2[:, 2],sol3[:, 2]))
-
-	# Calculation of Fitting Error 
-	est0 = np.zeros(len(exp0[:,0]))
-	est1 = np.zeros(len(exp1[:,0]))
-	est2 = np.zeros(len(exp2[:,0]))
-	est3 = np.zeros(len(exp3[:,0]))
-	for i in range(0,len(exp0[:,0])):
-		est0[i] = T[0,np.where(Lspan==exp0[i,0])]
-	for i in range(0,len(exp1[:,0])):
-		est1[i] = T[1,np.where(Lspan==exp1[i,0])]
-	for i in range(0,len(exp2[:,0])):
-		est2[i] = T[2,np.where(Lspan==exp2[i,0])]
-	for i in range(0,len(exp3[:,0])):
-		est3[i] = T[3,np.where(Lspan==exp3[i,0])]
-	
-	ErrT = [mse(est0,exp0[:,1]), mse(est1,exp1[:,1]), mse(est2,exp2[:,1]), mse(est3,exp3[:,1])]
-	ErrX = np.sqrt((np.subtract([X[0,len(Lspan)-1],X[1,len(Lspan)-1],X[2,len(Lspan)-1],X[3,len(Lspan)-1]], conv)**2))
-
-	return -(np.sum(ErrX**2)*500 + np.sum(ErrT))
+    sol0 = odeint(ODEfun, y0, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
+    sol1 = odeint(ODEfun, y1, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
+    sol2 = odeint(ODEfun, y2, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
+    sol3 = odeint(ODEfun, y3, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
+    Ta =np.vstack((sol0[:, 0],sol1[:, 0],sol2[:, 0],sol3[:, 0]))
+    T =np.vstack((sol0[:, 1],sol1[:, 1],sol2[:, 1],sol3[:, 1]))
+    X =np.vstack((sol0[:, 2],sol1[:, 2],sol2[:, 2],sol3[:, 2]))
+    
+    # Calculation of Fitting Error 
+    est0 = np.zeros(len(exp0[:,0]))
+    est1 = np.zeros(len(exp1[:,0]))
+    est2 = np.zeros(len(exp2[:,0]))
+    est3 = np.zeros(len(exp3[:,0]))
+    for i in range(0,len(exp0[:,0])):
+        est0[i] = T[0,np.where(Lspan==exp0[i,0])]
+    for i in range(0,len(exp1[:,0])):
+        est1[i] = T[1,np.where(Lspan==exp1[i,0])]
+    for i in range(0,len(exp2[:,0])):
+        est2[i] = T[2,np.where(Lspan==exp2[i,0])]
+    for i in range(0,len(exp3[:,0])):
+        est3[i] = T[3,np.where(Lspan==exp3[i,0])]
+    
+    ErrT = [mse(est0,exp0[:,1]), mse(est1,exp1[:,1]), mse(est2,exp2[:,1]), mse(est3,exp3[:,1])]
+    ErrX = np.sqrt((np.subtract([X[0,len(Lspan)-1],X[1,len(Lspan)-1],X[2,len(Lspan)-1],X[3,len(Lspan)-1]], conv)**2))
+    #print(ErrX,ErrT)
+    
+    return -(np.sum(ErrX**2)*10 + np.sum(ErrT))
 
 def cal_pop_fitness(pop):
     # Calculating the fitness value of each solution in the current population.
@@ -143,29 +144,31 @@ def mutation(offspring_crossover, num_mutations):
         for mutation_num in range(num_mutations):
             gene_idx = np.random.randint(offspring_crossover.shape[1])
             random_value = np.random.uniform(-1.0, 1.0, 1)
-            offspring_crossover[idx, gene_idx] = offspring_crossover[idx, gene_idx]*(1 + random_value)
+            offspring_crossover[idx, gene_idx] = offspring_crossover[idx, gene_idx]*(1 + ratio_mutation*random_value)
     return offspring_crossover
 
 	
 # Parameters to Optimize : k0, Ea, dH, UA 
 #initials = [2229, 17857, -361252, 69]
-initials = [6200000, 36000, -110000, 45]
-#initials = [6000000, 50000, -500000, 100]
+initial_best = [6200000, 36000, -110000, 45]
+initial_max = [6000000, 50000, -500000, 100]
 
 # Number of Parameters to optimize.
-num_params = len(initials)
+num_params = len(initial_max)
 
 # Genetic algorithm parameters:
-sol_per_pop = 20		# Population size
-num_parents_mating = 5	# Mating pool size
-num_mutations = 2		# Number of times being mutated
-num_generations = 1000
+sol_per_pop = 40		# Population size
+num_parents_mating = 10	# Mating pool size
+num_mutations = 3		# Number of times being mutated
+ratio_mutation = 0.3    # Degree of mutation : 1 for -100% ~ 100%
+num_generations = 300
 
 # Defining the population size.
 pop_size = (sol_per_pop,num_params) # The population will have sol_per_pop chromosome where each chromosome has num_params genes.
 #Creating the initial population.
 initial_factor = np.random.uniform(low=0, high=1, size=pop_size)
-new_population = initial_factor*initials
+new_population = initial_factor*initial_max
+new_population[0,:] = initial_best
 print(new_population)
 
 best_outputs = []
@@ -183,19 +186,19 @@ for generation in range(num_generations):
     # Selecting the best parents in the population for mating.
     parents = select_mating_pool(new_population, fitness, 
                                       num_parents_mating)
-    print("Parents")
-    print(parents)
+    #print("Parents")
+    #print(parents)
 
     # Generating next generation using crossover.
     offspring_crossover = crossover(parents,
                                        offspring_size=(pop_size[0]-parents.shape[0], num_params))
-    print("Crossover")
-    print(offspring_crossover)
+    #print("Crossover")
+    #print(offspring_crossover)
 
     # Adding some variations to the offspring using mutation.
     offspring_mutation = mutation(offspring_crossover, num_mutations)
-    print("Mutation")
-    print(offspring_mutation)
+    #print("Mutation")
+    #print(offspring_mutation)
 
     # Creating the new population based on the parents and offspring.
     new_population[0:parents.shape[0], :] = parents
