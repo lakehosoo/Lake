@@ -101,7 +101,7 @@ def error(param):
     ErrX = np.sqrt((np.subtract([X[0,len(Lspan)-1],X[1,len(Lspan)-1],X[2,len(Lspan)-1],X[3,len(Lspan)-1]], conv)**2))
     #print(ErrX,ErrT)
     
-    return -(np.sum(ErrX**2)*10 + np.sum(ErrT))
+    return -(np.sum(ErrX**2)*err_w_conv + np.sum(ErrT))
 
 def cal_pop_fitness(pop):
     # Calculating the fitness value of each solution in the current population.
@@ -147,28 +147,28 @@ def mutation(offspring_crossover, num_mutations):
             offspring_crossover[idx, gene_idx] = offspring_crossover[idx, gene_idx]*(1 + ratio_mutation*random_value)
     return offspring_crossover
 
-	
 # Parameters to Optimize : k0, Ea, dH, UA 
 #initials = [2229, 17857, -361252, 69]
-initial_best = [6200000, 36000, -110000, 45]
+#initial_best = [6200000, 36000, -110000, 45]
 initial_max = [6000000, 50000, -500000, 100]
 
 # Number of Parameters to optimize.
 num_params = len(initial_max)
 
 # Genetic algorithm parameters:
-sol_per_pop = 40		# Population size
-num_parents_mating = 10	# Mating pool size
+sol_per_pop = 100		# Population size
+num_parents_mating = 30	# Mating pool size
 num_mutations = 3		# Number of times being mutated
-ratio_mutation = 0.3    # Degree of mutation : 1 for -100% ~ 100%
-num_generations = 300
+ratio_mutation = 0.5    # Degree of mutation : 1 for -100% ~ 100%
+num_generations = 1000  # Total number of generations
+err_w_conv = 0          # Weight for conversion to calculate fitting error
 
 # Defining the population size.
 pop_size = (sol_per_pop,num_params) # The population will have sol_per_pop chromosome where each chromosome has num_params genes.
 #Creating the initial population.
 initial_factor = np.random.uniform(low=0, high=1, size=pop_size)
 new_population = initial_factor*initial_max
-new_population[0,:] = initial_best
+#new_population[0,:] = initial_best
 print(new_population)
 
 best_outputs = []
@@ -182,6 +182,15 @@ for generation in range(num_generations):
     best_outputs.append(np.max(fitness))
     # The best result in the current iteration.
     print("Best result : ", np.max(fitness))
+    
+    # Convergence Test
+    if (generation%(num_generations//20) == 0):
+        if (generation//(num_generations//10) > 3):
+            if (best_outputs[generation] - best_outputs[generation - num_generations//10]) < 0.001:
+                ratio_mutation = ratio_mutation/2
+        #if (generation//(num_generations//10) > 6):
+        #    if (best_outputs[generation] - best_outputs[generation - num_generations//10]) < 0.000001:
+        #        break
     
     # Selecting the best parents in the population for mating.
     parents = select_mating_pool(new_population, fitness, 
@@ -204,19 +213,33 @@ for generation in range(num_generations):
     new_population[0:parents.shape[0], :] = parents
     new_population[parents.shape[0]:, :] = offspring_mutation
 
-# Getting the best solution after iterating finishing all generations.
-# Then return the index of that solution corresponding to the best fitness.
+# Final Result
 fitness = cal_pop_fitness(new_population)
 best_match_idx = np.where(fitness == np.max(fitness))
 print("Best solution : ", new_population[best_match_idx, :])
 print("Best solution fitness : ", fitness[best_match_idx])
 
-plt.plot(best_outputs)
-plt.xlabel("Iteration")
-plt.ylabel("Fitness")
-plt.show()
+# Current Time 
+from datetime import datetime
+now = datetime.now()
+now = now.strftime('%Y%m%d-%H%M')
 
-# Graphic Tool
+# Plot #1
+fig, ax = plt.subplots()
+ax.plot(best_outputs)
+ax.set_xlabel("Iteration")
+ax.set_ylabel("Fitness")
+ax.text(0, -0.1,
+		 r'Best Fitness = 'f'{fitness[best_match_idx]}'
+         '\n'
+         r'Generation # = 'f'{generation}'
+         '\n'
+         r'R_Mutation = 'f'{ratio_mutation}'
+		 , ha='left', wrap = True, fontsize=10,fontweight='normal')
+fig.savefig('Result_'+now+'.png', dpi=300)
+#plt.show()
+
+# Variables for Plot #2
 param = np.ravel(new_population[best_match_idx,:])
 sol0 = odeint(ODEfun, y0, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
 sol1 = odeint(ODEfun, y1, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
@@ -227,7 +250,7 @@ Ta =np.vstack((sol0[:, 0],sol1[:, 0],sol2[:, 0],sol3[:, 0]))
 T =np.vstack((sol0[:, 1],sol1[:, 1],sol2[:, 1],sol3[:, 1]))
 X =np.vstack((sol0[:, 2],sol1[:, 2],sol2[:, 2],sol3[:, 2]))
 
-#%%
+# Plot #2
 fig, ((ax1, ax2, ax3, ax4),(ax5, ax6, ax7, ax8)) = plt.subplots(2, 4)
 plt.subplots_adjust(left  = 0.25)
 fig.subplots_adjust(wspace=0.25,hspace=0.3)
@@ -336,9 +359,6 @@ ax1.text(-400, 300,
 		 , ha='left', wrap = True, fontsize=12,
         bbox=dict(facecolor='none', edgecolor='black', pad=10.0), fontweight='normal')
 
-from datetime import datetime
-now = datetime.now()
-now = now.strftime('%Y%m%d-%H%M')
 np.savetxt('Result_'+now+'.out', param, delimiter=',')
 
 #plt.show()
