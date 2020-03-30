@@ -70,6 +70,8 @@ data_drop.shape
 sns.set(style="darkgrid")
 ax = sns.countplot(x="Prop_New", hue="Grade", data=data_drop)
 
+sns.pairplot(data_drop, hue="Prop_New")
+
 #data[data['Grade']=='REF5'],
 #data.hist(figsize=(20, 15))
 #pd.scatter_matrix(data, diagonal='kde', color='b', alpha=0.3, figsize=(20, 15))
