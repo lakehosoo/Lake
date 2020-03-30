@@ -67,7 +67,8 @@ i = data[data['Prop_New'].isnull() == True].index
 data_drop = data.drop(i)
 
 data_drop.shape
-data['Prop_New'].hist(hue='Grade')
+sns.set(style="darkgrid")
+ax = sns.countplot(x="Prop_New", hue="Grade", data=data_drop)
 
 #data[data['Grade']=='REF5'],
 #data.hist(figsize=(20, 15))
