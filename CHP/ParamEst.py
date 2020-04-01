@@ -28,21 +28,21 @@ exp2 = np.delete(exp2, np.argwhere((exp2 >= 150) & (exp2 <= 301)), axis=0)
 exp3 = np.delete(exp3, np.argwhere((exp3 >= 150) & (exp3 <= 301)), axis=0)
 
 # Parameters
-Ax 	 = 5.065;   # cm2
-rho  = 0.00052; # kg/cm3
-Fa0  = 4.477;   # mol/hr
-Ca0  = 1.923;   # mol/kg
-k0   = 2229;    # 1/hr
-Ea   = 17857;   # J/mol
-dH   = -361252; # J/mol
-Ta0  = 293.15;
-UA 	 = 69;      # J/cm2/hr/k (=191.67 W/m2/k)
-mc 	 = 500;     # mol/hr
-CpCP = 68.1479; # cal/mol/K
-CpCM = 46.996;
-CpH2 = 7.5318;
-CpCA = 57.8437;
-CpWR = 17.7058;
+Ax 	 = 5.065    # cm2
+rho  = 0.00052  # kg/cm3
+Fa0  = 4.477    # mol/hr
+Ca0  = 1.923    # mol/kg
+k0   = 2229     # 1/hr
+Ea   = 17857    # J/mol
+dH   = -361252  # J/mol
+Ta0  = 293.15
+UA 	 = 69       # J/cm2/hr/k (=191.67 W/m2/k)
+mc 	 = 500      # mol/hr
+CpCP = 68.1479  # cal/mol/K
+CpCM = 46.996
+CpH2 = 7.5318
+CpCA = 57.8437
+CpWR = 17.7058
 
 Lspan = np.linspace(0, 301, 1000) # Range for the independent variable
 Lspan = np.hstack((Lspan,exp0[:,0],exp1[:,0],exp2[:,0],exp3[:,0]))
@@ -57,29 +57,27 @@ def ODEfun(Yfuncvec, L, Ax,Fa0,rho,Ca0,k0,Ea,dH,Ta0,UA,mc,CpCP,CpCM,CpH2,CpCA):
     Ta= Yfuncvec[0]
     T = Yfuncvec[1]
     X = Yfuncvec[2]
-    sumcp = 4.184*(CpCP*(1 - X) + CpCP*(1.2 - X) + CpCM*3 + CpCA*X + CpWR*X);  # Initial CHP:H2:Cumene = 1:1.2:3
-    dCp = 4.184*(CpCA + CpWR - CpCP - CpH2);
-	# Explicit Equation Inline
-    k = k0 * np.exp(-Ea/(8.314*T)); 
-    ra = k * Ca0 * (1 - X);
+    sumcp = 4.184*(CpCP*(1 - X) + CpCP*(1.2 - X) + CpCM*3 + CpCA*X + CpWR*X)  # Initial CHP:H2:Cumene = 1:1.2:3
+    dCp = 4.184*(CpCA + CpWR - CpCP - CpH2)
+    # Explicit Equation Inline
+    k = k0 * np.exp(-Ea/(8.314*T))
+    ra = k * Ca0 * (1 - X)
+    #ra = k * Ca0 * (1 - ((1 + 1/Kc)*X))
     # Differential equations
-    dTadL = 0*UA * (T - Ta) / (mc*CpWR);
-    dTdL = Ax *( (UA * (Ta - T)) - rho * ra * (dH + dCp*(T-298.15)) ) / (sumcp * Fa0); 
-    dXdL = Ax * rho * (ra / Fa0);
+    dTadL = 0*UA * (T - Ta) / (mc*CpWR)
+    dTdL = Ax *( (UA * (Ta - T)) - rho * ra * (dH + dCp*(T-298.15)) ) / (sumcp * Fa0)
+    dXdL = Ax * rho * (ra / Fa0)
     return np.array([dTadL,dTdL,dXdL])
 
-def rmse(predictions, targets):
-    return np.sqrt(((predictions - targets) ** 2).mean())
-
 def mse(predictions, targets):
-    return np.square(((predictions - targets)).mean())
+    return np.mean((predictions - targets) ** 2)
 
 def error(param):
     sol0 = odeint(ODEfun, y0, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
     sol1 = odeint(ODEfun, y1, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
     sol2 = odeint(ODEfun, y2, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
     sol3 = odeint(ODEfun, y3, Lspan, (Ax,Fa0,rho,Ca0,param[0],param[1],param[2],Ta0,param[3],mc,CpCP,CpCM,CpH2,CpCA))
-    Ta =np.vstack((sol0[:, 0],sol1[:, 0],sol2[:, 0],sol3[:, 0]))
+    #Ta =np.vstack((sol0[:, 0],sol1[:, 0],sol2[:, 0],sol3[:, 0]))
     T =np.vstack((sol0[:, 1],sol1[:, 1],sol2[:, 1],sol3[:, 1]))
     X =np.vstack((sol0[:, 2],sol1[:, 2],sol2[:, 2],sol3[:, 2]))
     
@@ -98,7 +96,7 @@ def error(param):
         est3[i] = T[3,np.where(Lspan==exp3[i,0])]
     
     ErrT = [mse(est0,exp0[:,1]), mse(est1,exp1[:,1]), mse(est2,exp2[:,1]), mse(est3,exp3[:,1])]
-    ErrX = np.sqrt((np.subtract([X[0,len(Lspan)-1],X[1,len(Lspan)-1],X[2,len(Lspan)-1],X[3,len(Lspan)-1]], conv)**2))
+    ErrX = 10000*(np.subtract([X[0,len(Lspan)-1],X[1,len(Lspan)-1],X[2,len(Lspan)-1],X[3,len(Lspan)-1]], conv)**2)
     #print(ErrX,ErrT)
     
     return -(np.sum(ErrX**2)*err_w_conv + np.sum(ErrT))
@@ -160,12 +158,12 @@ sol_per_pop = 100		# Population size
 num_parents_mating = 30	# Mating pool size
 num_mutations = 3		# Number of times being mutated
 ratio_mutation = 0.5    # Degree of mutation : 1 for -100% ~ 100%
-num_generations = 1000  # Total number of generations
-err_w_conv = 0          # Weight for conversion to calculate fitting error
+num_generations = 3000  # Total number of generations
+err_w_conv = 1          # Weight for conversion to calculate fitting error
 
 # Defining the population size.
 pop_size = (sol_per_pop,num_params) # The population will have sol_per_pop chromosome where each chromosome has num_params genes.
-#Creating the initial population.
+# Creating the initial population.
 initial_factor = np.random.uniform(low=0, high=1, size=pop_size)
 new_population = initial_factor*initial_max
 #new_population[0,:] = initial_best
@@ -190,8 +188,8 @@ for generation in range(num_generations):
                 ratio_mutation = ratio_mutation/2
         #if (generation//(num_generations//10) > 6):
         #    if (best_outputs[generation] - best_outputs[generation - num_generations//10]) < 0.000001:
-        #        break
-    
+        #       break
+
     # Selecting the best parents in the population for mating.
     parents = select_mating_pool(new_population, fitness, 
                                       num_parents_mating)
@@ -229,7 +227,7 @@ fig, ax = plt.subplots()
 ax.plot(best_outputs)
 ax.set_xlabel("Iteration")
 ax.set_ylabel("Fitness")
-ax.text(0, -0.1,
+ax.text(10, -4,
 		 r'Best Fitness = 'f'{fitness[best_match_idx]}'
          '\n'
          r'Generation # = 'f'{generation}'
@@ -250,11 +248,28 @@ Ta =np.vstack((sol0[:, 0],sol1[:, 0],sol2[:, 0],sol3[:, 0]))
 T =np.vstack((sol0[:, 1],sol1[:, 1],sol2[:, 1],sol3[:, 1]))
 X =np.vstack((sol0[:, 2],sol1[:, 2],sol2[:, 2],sol3[:, 2]))
 
+# Calculation of Fitting Error #########################################################
+est0 = np.zeros(len(exp0[:,0]))
+est1 = np.zeros(len(exp1[:,0]))
+est2 = np.zeros(len(exp2[:,0]))
+est3 = np.zeros(len(exp3[:,0]))
+for i in range(0,len(exp0[:,0])):
+    est0[i] = T[0,np.where(Lspan==exp0[i,0])]
+for i in range(0,len(exp1[:,0])):
+    est1[i] = T[1,np.where(Lspan==exp1[i,0])]
+for i in range(0,len(exp2[:,0])):
+    est2[i] = T[2,np.where(Lspan==exp2[i,0])]
+for i in range(0,len(exp3[:,0])):
+    est3[i] = T[3,np.where(Lspan==exp3[i,0])]
+ErrT = [mse(est0,exp0[:,1]), mse(est1,exp1[:,1]), mse(est2,exp2[:,1]), mse(est3,exp3[:,1])]
+ErrX = 10000*(np.subtract([X[0,len(Lspan)-1],X[1,len(Lspan)-1],X[2,len(Lspan)-1],X[3,len(Lspan)-1]], conv)**2)
+###########################################################################################
+
 # Plot #2
 fig, ((ax1, ax2, ax3, ax4),(ax5, ax6, ax7, ax8)) = plt.subplots(2, 4)
 plt.subplots_adjust(left  = 0.25)
 fig.subplots_adjust(wspace=0.25,hspace=0.3)
-fig.suptitle("""CHP Dehydration (Constant $T_a$)""", fontweight='bold', x = 0.34,y=0.97)
+fig.suptitle('CHP Dehydration (Constant $T_a$, Total Err = ErrT + 'f'{err_w_conv:.0f}'' x ErrX)', fontweight='bold', x = 0.34,y=0.97)
 
 # 25C
 ax1.plot(exp0[:,0],exp0[:,1], color='blue', linestyle='none', marker='.')
@@ -266,6 +281,7 @@ ax1.set_ylim(298,348)
 ax1.set_xlim(0,300)
 ax1.grid()
 ax1.ticklabel_format(style='plain',axis='x')
+ax1.text(10, 340, r'MSE = 'f'{ErrT[0]:.1f}', color='blue', fontsize=10)
 
 p3 = ax2.plot(Lspan,X[0,:])[0]
 ax2.plot(300, conv[0], color='blue', linestyle='none', marker='o')
@@ -278,6 +294,7 @@ ax2.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax2.set_title('Conversion', fontsize='medium')
 ax2.ticklabel_format(style='plain',axis='x')
 ax2.text(-80, 1.03, r'T$_a$ = 25$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
+ax2.text(10, 0.85, r'MSE = 'f'{ErrX[0]:.1f}', color='blue', fontsize=10)
 
 # 30C
 ax3.plot(exp1[:,0],exp1[:,1], color='blue', linestyle='none', marker='.')
@@ -289,6 +306,7 @@ ax3.set_ylim(303,353)
 ax3.set_xlim(0,300)
 ax3.grid()
 ax3.ticklabel_format(style='plain',axis='x')
+ax3.text(10, 345, r'MSE = 'f'{ErrT[1]:.1f}', color='blue', fontsize=10)
 
 p6 = ax4.plot(Lspan,X[1,:])[0]
 ax4.plot(300, conv[1], color='blue', linestyle='none', marker='o')
@@ -301,6 +319,7 @@ ax4.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax4.set_title('Conversion', fontsize='medium')
 ax4.ticklabel_format(style='plain',axis='x')
 ax4.text(-80, 1.03, r'T$_a$ = 30$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
+ax4.text(10, 0.85, r'MSE = 'f'{ErrX[1]:.1f}', color='blue', fontsize=10)
 
 # 35C
 ax5.plot(exp2[:,0],exp2[:,1], color='blue', linestyle='none', marker='.')
@@ -312,6 +331,7 @@ ax5.set_ylim(308,358)
 ax5.set_xlim(0,300)
 ax5.grid()
 ax5.ticklabel_format(style='plain',axis='x')
+ax5.text(10, 350, r'MSE = 'f'{ErrT[2]:.1f}', color='blue', fontsize=10)
 
 p9 = ax6.plot(Lspan,X[2,:])[0]
 ax6.plot(300, conv[2], color='blue', linestyle='none', marker='o')
@@ -324,6 +344,7 @@ ax6.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax6.set_title('Conversion', fontsize='medium')
 ax6.ticklabel_format(style='plain',axis='x')
 ax6.text(-80, 1.03, r'T$_a$ = 35$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
+ax6.text(10, 0.85, r'MSE = 'f'{ErrX[2]:.1f}', color='blue', fontsize=10)
 
 # 40C
 ax7.plot(exp3[:,0],exp3[:,1], color='blue', linestyle='none', marker='.')
@@ -335,6 +356,7 @@ ax7.set_ylim(313,363)
 ax7.set_xlim(0,300)
 ax7.grid()
 ax7.ticklabel_format(style='plain',axis='x')
+ax7.text(10, 355, r'MSE = 'f'{ErrT[3]:.1f}', color='blue', fontsize=10)
 
 p12 = ax8.plot(Lspan,X[3,:])[0]
 ax8.plot(300, conv[3], color='blue', linestyle='none', marker='o')
@@ -347,6 +369,7 @@ ax8.set_xlabel(r'$Length  {(cm)}$', fontsize='medium')
 ax8.set_title('Conversion', fontsize='medium')
 ax8.ticklabel_format(style='plain',axis='x')
 ax8.text(-80, 1.03, r'T$_a$ = 40$^\circ$C', style='italic', weight='bold', color='red', fontsize=10)
+ax8.text(10, 0.85, r'MSE = 'f'{ErrX[3]:.1f}', color='blue', fontsize=10)
 
 ax1.text(-400, 300,
 		 r'k0  = 'f'{param[0]:.0f} (1/hr)'
