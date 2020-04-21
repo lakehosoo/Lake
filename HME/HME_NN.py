@@ -2,15 +2,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data_value = pd.read_excel('HME_Data_V2.xlsx', sheet_name='Rearrange', index_col=0, header=None, skiprows=2).transpose()
-data_index = pd.read_excel('HME_Data_V2.xlsx', sheet_name='Rearrange', index_col=0, header=None,nrows=2, dtype=object).transpose()
-#data_value = pd.read_csv('HME/data.csv', index_col=0, header=None, skiprows=2).transpose()
-#data_index = pd.read_csv('HME/data.csv', index_col=0, header=None,nrows=2, dtype=object).transpose()
-data_index.columns = ["Name","Grade"]
+#data_value = pd.read_excel('HME_Data_V2.xlsx', sheet_name='Rearrange', index_col=0, header=None, skiprows=2).transpose()
+#data_index = pd.read_excel('HME_Data_V2.xlsx', sheet_name='Rearrange', index_col=0, header=None,nrows=2, dtype=object).transpose()
+data_value = pd.read_csv('HME/data.csv', index_col=0, header=None, skiprows=2).transpose()
+data_index = pd.read_csv('HME/data.csv', index_col=0, header=None,nrows=2, dtype=object).transpose()
+data_index.columns=["Name","Grade"]
 
 # Grade Information
 for i in range(data_index.shape[0]):
-    if data_index.iloc[i,1]==0:
+    if len(str(data_index.iloc[i,1])) < 3:
         data_index.iloc[i,1] = data_index.iloc[i-1,1]
 
 data = pd.concat([data_index,data_value],axis=1)
@@ -52,7 +52,8 @@ X_test_scale = MaxAbsScaler().fit_transform(X_test)
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-mlp = MLPRegressor(solver='lbfgs', random_state=0, alpha=0.001, hidden_layer_sizes=[128,64]) # activation='tanh', hidden_layer_sizes=[10, 10]
+mlp = MLPRegressor(solver='lbfgs', random_state=0, max_iter=1000,
+                   alpha=0.001, hidden_layer_sizes=[128,64]) # activation='tanh', hidden_layer_sizes=[10, 10]
 mlp.fit(X_train_scale, y_train)
 print("Score of Train / Test : {:.3f} / {:.3f}".format(mlp.score(X_train_scale, y_train),mlp.score(X_test_scale, y_test)))
 
@@ -84,7 +85,7 @@ def tuning_mlp(x):
 lb = [0.0001,  10,  10]
 ub = [     1, 128, 128]
 
-xopt, fopt = pso(tuning_mlp, lb, ub, ieqcons=[], f_ieqcons=None, maxiter=10, minstep=1e-8, minfunc=-200)
+xopt, fopt = pso(tuning_mlp, lb, ub, ieqcons=[], f_ieqcons=None, maxiter=100, minstep=1e-8, minfunc=-200)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -97,10 +98,9 @@ ax.set_xlim(0,1)
 ax.set_ylim(0,1)
 plt.show()
 
-
 # Prediction Result
 y_pred_train = mlp.predict(X_train_scale)
-y_pred_test = bmlp.predict(X_test_scale)
+y_pred_test = mlp.predict(X_test_scale)
 
 plt.figure()
 plt.scatter(y_train, y_pred_train, c='b', s=10, alpha=0.5)
