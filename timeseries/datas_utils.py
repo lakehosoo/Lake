@@ -496,7 +496,7 @@ def download_timeseries(date):
         ('Has_Group', '3'),
         ('Is_Zipped', '0'),
     )
-    r = requests.get('https://www.transtats.bts.gov/DownLoad_Table.asp', verify=False
+    r = requests.get('https://www.transtats.bts.gov/DownLoad_Table.asp', verify=False,
                      headers=headers, params=params,
                      cookies=cookies, data=data)
     with open("data/timeseries/{:%Y-%m}.zip".format(date.to_timestamp()), "wb") as f:
