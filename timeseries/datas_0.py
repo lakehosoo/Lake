@@ -101,12 +101,10 @@ store = 'data/ts.hdf5'
 
 if not os.path.exists(store):
     download_many('2000-01-01', '2016-01-01')
-
     zips = glob.glob(os.path.join('data', 'timeseries', '*.zip'))
     csvs = [unzip_one(fp) for fp in zips]
     dfs = [read_one(fp) for fp in csvs]
     df = pd.concat(dfs, ignore_index=True)
-
     df['origin'] = df['origin'].astype('category')
     df.to_hdf(store, 'ts', format='table')
 else:
