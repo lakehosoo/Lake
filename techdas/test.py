@@ -2,10 +2,63 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data_value = pd.read_excel('HME_Data_V2.xlsx', sheet_name='Rearrange', index_col=0, header=None, skiprows=2).transpose()
-data_index = pd.read_excel('HME_Data_V2.xlsx', sheet_name='Rearrange', index_col=0, header=None,nrows=2, dtype=object).transpose()
-#data_value = pd.read_csv('HME/data.csv', index_col=0, header=None, skiprows=2).transpose()
-#data_index = pd.read_csv('HME/data.csv', index_col=0, header=None,nrows=2, dtype=object).transpose()
+df = pd.read_csv('techdas/GTG_On.csv', skiprows = 3, header=1, index_col = 0)
+df = df.dropna(axis=0, how='all')
+df = df.dropna(axis=1, how='all')
+df.index = pd.to_datetime(df.index)
+df.dtypes
+
+import matplotlib.pyplot as plt
+df.plot()
+plt.show()
+df['SM1FIC2085'].plot()
+
+from pandas.plotting import scatter_matrix
+scatter_matrix(df[['SM1AIC2006A', 'SM1FIC2083', 'SM1FIC2085']]) 
+plt.show()
+
+########## To Numpy Array ############
+time = df.index
+#time_max = time.count()
+data = df.to_numpy()
+
+data.shape
+len(data[:,0])
+
+data[:,1] = data[:,1]/1000
+
+np.square(data) #data**2
+np.sqrt(data)
+np.log10(data) # abs / exp / sin,cos,tanh...
+
+np.sort(data[:,0]) # np.sort(data[:,0])[::-1]
+
+data.sum(axis=0) # np.sum(data[:,0])
+data.mean(axis=0) # std, var, min, max, cumsum, cumprod
+time[np.argmin(data[:,0])] 
+
+np.argwhere((data[:,0] >= 23) | (data[:,0] <= 10)) # np.percentile(data[:,0],15)
+
+feed = data[:,0]+data[:,1]
+r_to_f = data[:,3]/(data[:,0]+data[:,1])
+r_to_d = data[:,3]/(data[:,0]+data[:,1]-data[:,4])
+steam = data[:,2]
+spec = data[:,5]
+
+np.cov(r_to_f,spec) # 공분산
+np.corrcoef(r_to_f,spec) # 상관계수
+
+import matplotlib.pyplot as plt
+
+plt.plot(time, feed, 'r-')
+plt.plot(time, steam, 'b-')
+plt.plot(time, r_to_f, 'g.')
+plt.xlabel('time')
+plt.ylabel('flowrate [t/h]')
+plt.tick_params(axis='x', rotation=30, labelsize='small')
+plt.show()
+
+
 data_index.columns = ["Name","Grade"]
 
 # Grade Information
