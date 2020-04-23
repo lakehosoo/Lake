@@ -470,7 +470,6 @@ def download_timeseries(date):
         ('VarDesc', 'Div5TailNum'),
         ('VarType', 'Char')
     ]
-
     cookies = {
         'ASPSESSIONIDCAQCSDSS': 'GOBIGIDBLGILGICKLFHKIHMN',
         '__utmt_ritaTracker': '1',
