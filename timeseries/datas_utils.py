@@ -361,289 +361,145 @@ def download_timeseries(date):
         ('VarType', 'Num'),
         ('VarDesc', 'Distance'),
         ('VarType', 'Num'),
-
         ('VarDesc', 'DistanceGroup'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'CarrierDelay'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'WeatherDelay'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'NASDelay'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'SecurityDelay'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'LateAircraftDelay'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'FirstDepTime'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'TotalAddGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'LongestAddGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'DivAirportLandings'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'DivReachedDest'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'DivActualElapsedTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'DivArrDelay'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'DivDistance'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div1Airport'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div1AirportID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div1AirportSeqID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div1WheelsOn'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div1TotalGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div1LongestGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div1WheelsOff'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div1TailNum'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div2Airport'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div2AirportID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div2AirportSeqID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div2WheelsOn'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div2TotalGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div2LongestGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div2WheelsOff'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div2TailNum'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div3Airport'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div3AirportID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div3AirportSeqID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div3WheelsOn'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div3TotalGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div3LongestGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div3WheelsOff'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div3TailNum'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div4Airport'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div4AirportID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div4AirportSeqID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div4WheelsOn'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div4TotalGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div4LongestGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div4WheelsOff'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div4TailNum'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div5Airport'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div5AirportID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div5AirportSeqID'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div5WheelsOn'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div5TotalGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div5LongestGTime'),
-
         ('VarType', 'Num'),
-
         ('VarDesc', 'Div5WheelsOff'),
-
         ('VarType', 'Char'),
-
         ('VarDesc', 'Div5TailNum'),
-
         ('VarType', 'Char')
-
     ]
 
     cookies = {
-
         'ASPSESSIONIDCAQCSDSS': 'GOBIGIDBLGILGICKLFHKIHMN',
-
         '__utmt_ritaTracker': '1',
-
         '__utmt_GSA_CP': '1',
-
         '__utma': '261918792.554646962.1504352085.1504442392.1504442407.3',
-
         '__utmb': '261918792.8.10.1504442407',
-
         '__utmc': '261918792',
-
         '__utmz': '261918792.1504442407.3.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)',
-
     }
-
-
-
     headers = {
-
         'Origin': 'https://www.transtats.bts.gov',
-
         'Accept-Encoding': 'gzip, deflate, br',
-
         'Accept-Language': 'en-US,en;q=0.8',
-
         'Upgrade-Insecure-Requests': '1',
-
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
-
         'Content-Type': 'application/x-www-form-urlencoded',
-
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-
         'Cache-Control': 'max-age=0',
-
         'Referer': 'https://www.transtats.bts.gov/DL_SelectFields.asp',
-
         'Connection': 'keep-alive',
-
     }
-
-
-
     params = (
-
         ('Table_ID', '236'),
-
         ('Has_Group', '3'),
-
         ('Is_Zipped', '0'),
-
     )
-
-
-
     r = requests.get('https://www.transtats.bts.gov/DownLoad_Table.asp',
-
                      headers=headers, params=params,
-
                      cookies=cookies, data=data)
 
     with open("data/timeseries/{:%Y-%m}.zip".format(date.to_timestamp()), "wb") as f:
-
         f.write(r.content)
