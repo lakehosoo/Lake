@@ -1,8 +1,21 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+'''
+data1 = pd.read_excel('techdas/101-BG_2001-2003.xlsx', sheet_name='AIR', index_col=0, header=None, usecols="B:BA", skiprows=5)
+data2 = pd.read_excel('techdas/101-BG_2001-2003.xlsx', sheet_name='FNC', index_col=0, header=None, usecols="B:AQ", skiprows=5)
+index1 = pd.read_excel('techdas/101-BG_2001-2003.xlsx', sheet_name='AIR', index_col=0, header=None, usecols="B:BA", skiprows=2, nrows=3, dtype=object)
+index2 = pd.read_excel('techdas/101-BG_2001-2003.xlsx', sheet_name='FNC', index_col=0, header=None, usecols="B:BA", skiprows=2, nrows=3, dtype=object)
+data1.to_csv("techdas/data1.csv", index=True)
+data2.to_csv("techdas/data2.csv", index=True)
+index1.to_csv("techdas/index1.csv", index=True)
+index2.to_csv("techdas/index2.csv", index=True)
+'''
+data1 = pd.read_csv('techdas/data1.csv', index_col=0)
+data2 = pd.read_csv('techdas/data2.csv', index_col=0)
+index1 = pd.read_csv('techdas/index1.csv', index_col=0)
+index2 = pd.read_csv('techdas/index2.csv', index_col=0)
 
-df = pd.read_csv('techdas/GTG_On.csv', skiprows = 3, header=1, index_col = 0)
 df = df.dropna(axis=0, how='all')
 df = df.dropna(axis=1, how='all')
 df.index = pd.to_datetime(df.index)
